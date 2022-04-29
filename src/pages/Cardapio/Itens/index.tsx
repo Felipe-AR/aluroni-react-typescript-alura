@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Itens.module.scss';
-import cardapio from './itens.json';
+import cardapio from 'data/cardapio.json';
 import Item from './Item';
+import { Cardapio } from 'types/Prato';
 
 interface Props {
   busca: string;
@@ -24,35 +25,35 @@ export default function Itens(props: Props) {
   }
 
   function ordenarPropriedadeCrescente(
-    novaLista: typeof cardapio,
+    novaLista: Cardapio,
     propriedade: 'size' | 'serving' | 'price'
   ) {
     return novaLista.sort((a, b) => (a[propriedade] > b[propriedade] ? 1 : -1));
   }
 
-  function ordenar(novaLista: typeof cardapio) {
+  function ordenar(novaLista: Cardapio) {
     switch (ordenador) {
-    case 'porcao':
-      return ordenarPropriedadeCrescente(novaLista, 'size');
-    case 'qtd_pessoas':
-      return ordenarPropriedadeCrescente(novaLista, 'serving');
-    case 'preco':
-      return ordenarPropriedadeCrescente(novaLista, 'price');
-    default:
-      return novaLista;
+      case 'porcao':
+        return ordenarPropriedadeCrescente(novaLista, 'size');
+      case 'qtd_pessoas':
+        return ordenarPropriedadeCrescente(novaLista, 'serving');
+      case 'preco':
+        return ordenarPropriedadeCrescente(novaLista, 'price');
+      default:
+        return novaLista;
     }
   }
 
   useEffect(() => {
     const novaLista = cardapio.filter(
-      (item) => testaBusca(item.title) && testaFiltro(item.category.id)
+      item => testaBusca(item.title) && testaFiltro(item.category.id)
     );
     setLista(ordenar(novaLista));
   }, [busca, filtro, ordenador]);
 
   return (
     <div className={styles.itens}>
-      {lista.map((item) => (
+      {lista.map(item => (
         <Item key={item.id} {...item} />
       ))}
     </div>
